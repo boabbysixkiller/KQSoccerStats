@@ -12,10 +12,16 @@ namespace SoccerStats.Controllers
         public ActionResult Index()
         {
             List<Result> results = Helper.SoccerStatsWorker.LoadPage();
+            List<Result> allResults = new List<Result>();
 
-            results = results.Where(r => r.HomeTeam == "Liverpool" || r.AwayTeam == "Liverpool").ToList();
+            List<string> teams = results.Select(r => r.HomeTeam).Distinct().ToList();
 
-            return View(results);
+            foreach (var team in teams)
+            {
+                allResults.AddRange(results.Where(r => r.HomeTeam == team || r.AwayTeam == team).ToList());
+            }            
+
+            return View(allResults);
         }
 
         public ActionResult About()
